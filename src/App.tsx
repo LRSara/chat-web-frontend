@@ -1,8 +1,15 @@
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { useChatStore } from "@/chat/useChatStore";
+import { RoomList } from "@/room/RoomList";
+import { ChatView } from "@/chat/ChatView";
+
 function App() {
+  const currentRoomId = useChatStore((s) => s.currentRoomId);
+
   return (
-    <div>
-      <h1>Chat Web</h1>
-    </div>
+    <TooltipProvider>
+      {currentRoomId ? <ChatView /> : <RoomList />}
+    </TooltipProvider>
   );
 }
 
