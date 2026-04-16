@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRoomStore } from "./useRoomStore";
+import { HiOutlinePlus } from "react-icons/hi2";
 
 export function CreateRoomForm() {
   const [open, setOpen] = useState(false);
@@ -53,7 +54,10 @@ export function CreateRoomForm() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Criar sala</Button>
+        <Button className="gap-1.5 rounded-full bg-wa-green text-white hover:bg-wa-teal">
+          <HiOutlinePlus className="size-4" />
+          Nova sala
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -84,7 +88,7 @@ export function CreateRoomForm() {
             />
           </div>
           {error && <p className="text-destructive text-sm">{error}</p>}
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" disabled={loading} className="rounded-full bg-wa-green text-white hover:bg-wa-teal">
             {loading ? "Criando..." : "Criar"}
           </Button>
         </form>

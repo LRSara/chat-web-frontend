@@ -9,6 +9,7 @@ import { MessageList } from "./MessageList";
 import { MessageInput } from "./MessageInput";
 import { UserList } from "./UserList";
 import { useNotifications, NotificationStack } from "./Notification";
+import { HiOutlineArrowLeft, HiOutlineUserGroup } from "react-icons/hi2";
 
 export function resolveFileUrl(filePath: string | null): string | null {
   if (!filePath) return null;
@@ -36,7 +37,6 @@ export function ChatView() {
 
   const currentRoom = rooms.find((r) => r.id === currentRoomId);
 
-  // Re-buscar mensagens e salas ao montar (F5 / sessão salva)
   useEffect(() => {
     if (!currentRoomId) return;
     if (messages.length > 0 && currentRoom) return;
@@ -60,7 +60,6 @@ export function ChatView() {
       promises.push(fetchRooms());
     }
 
-    // Buscar usuários online (só se joinRoom não populou)
     if (useChatStore.getState().usersOnline.length === 0) {
       promises.push(
         api.getOnlineUsers(currentRoomId).then((res) => {
@@ -184,8 +183,8 @@ export function ChatView() {
 
   if (initialLoading) {
     return (
-      <div className="flex min-h-dvh items-center justify-center">
-        <p className="text-muted-foreground">Carregando conversa...</p>
+      <div className="flex min-h-dvh items-center justify-center bg-wa-chat-bg">
+        <p className="text-wa-time">Carregando conversa...</p>
       </div>
     );
   }
@@ -193,35 +192,42 @@ export function ChatView() {
   return (
     <div className="flex h-dvh flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-border px-4 py-2">
+      <div className="flex items-center justify-between bg-wa-header px-4 py-2.5">
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" onClick={handleLeave}>
-            Sair
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={handleLeave}
+            className="text-wa-header-foreground hover:bg-wa-teal/30 hover:text-wa-header-foreground"
+          >
+            <HiOutlineArrowLeft className="size-5" />
           </Button>
           <div>
-            <h2 className="text-sm font-semibold">
+            <h2 className="text-base font-semibold text-wa-header-foreground">
               {currentRoom?.name ?? "Sala"}
             </h2>
-            <p className="text-muted-foreground text-xs">{currentNick}</p>
+            <p className="text-xs text-wa-header-foreground/70">
+              {currentNick}
+            </p>
           </div>
         </div>
         <Button
-          variant="outline"
-          size="sm"
+          variant="ghost"
+          size="icon-sm"
           onClick={() => setShowUsers(!showUsers)}
-          className="sm:hidden"
+          className="text-wa-header-foreground hover:bg-wa-teal/30 hover:text-wa-header-foreground sm:hidden"
         >
-          Online
+          <HiOutlineUserGroup className="size-5" />
         </Button>
       </div>
 
       {/* Body */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden bg-wa-chat-bg">
         {/* UserList sidebar */}
         <div
           className={`${
             showUsers ? "block" : "hidden"
-          } w-full border-r border-border p-3 sm:block sm:w-48`}
+          } w-full border-r border-border bg-background p-3 sm:block sm:w-48`}
         >
           <UserList />
         </div>

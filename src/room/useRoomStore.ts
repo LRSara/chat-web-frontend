@@ -27,7 +27,8 @@ export const useRoomStore = create<RoomState>((set) => ({
 
   createRoom: async (name, password) => {
     const res = await api.createRoom(name, password);
-    set((s) => ({ rooms: [res.data, ...s.rooms] }));
-    return res.data;
+    const room = { ...res.data, online_users_count: res.data.online_users_count ?? 0 };
+    set((s) => ({ rooms: [room, ...s.rooms] }));
+    return room;
   },
 }));

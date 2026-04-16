@@ -14,14 +14,14 @@ export function UserList() {
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
       <p className="text-muted-foreground text-xs font-medium">
         Online ({usersOnline.length})
       </p>
       {usersOnline.map((nick) => (
-        <div key={nick} className="flex items-center gap-2">
-          <Avatar className="size-6">
-            <AvatarFallback className="text-xs">
+        <div key={nick} className="flex items-center gap-2.5 py-0.5">
+          <Avatar className="size-8">
+            <AvatarFallback className="bg-wa-teal text-xs text-white">
               {nick.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>

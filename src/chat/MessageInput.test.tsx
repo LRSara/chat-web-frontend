@@ -14,7 +14,7 @@ describe("MessageInput", () => {
     );
 
     expect(screen.getByPlaceholderText("Digite uma mensagem...")).toBeInTheDocument();
-    expect(screen.getByText("Enviar")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Enviar" })).toBeInTheDocument();
   });
 
   it("deve chamar onSendText ao enviar mensagem", async () => {
@@ -30,7 +30,7 @@ describe("MessageInput", () => {
 
     const input = screen.getByPlaceholderText("Digite uma mensagem...");
     await userEvent.type(input, "Olá mundo");
-    await userEvent.click(screen.getByText("Enviar"));
+    await userEvent.click(screen.getByRole("button", { name: "Enviar" }));
 
     expect(onSendText).toHaveBeenCalledWith("Olá mundo");
   });
@@ -63,7 +63,7 @@ describe("MessageInput", () => {
       />
     );
 
-    await userEvent.click(screen.getByText("Enviar"));
+    await userEvent.click(screen.getByRole("button", { name: "Enviar" }));
 
     expect(onSendText).not.toHaveBeenCalled();
   });
@@ -81,7 +81,7 @@ describe("MessageInput", () => {
 
     const input = screen.getByPlaceholderText("Digite uma mensagem...");
     await userEvent.type(input, "   ");
-    await userEvent.click(screen.getByText("Enviar"));
+    await userEvent.click(screen.getByRole("button", { name: "Enviar" }));
 
     expect(onSendText).not.toHaveBeenCalled();
   });

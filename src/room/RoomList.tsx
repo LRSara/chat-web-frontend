@@ -13,40 +13,40 @@ export function RoomList() {
     fetchRooms();
   }, [fetchRooms]);
 
-  if (loading && rooms.length === 0) {
-    return (
-      <div className="flex min-h-dvh items-center justify-center">
-        <p className="text-muted-foreground">Carregando salas...</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="mx-auto flex min-h-dvh max-w-lg flex-col gap-6 p-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Salas de chat</h1>
+    <div className="flex min-h-dvh flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between bg-wa-header px-4 py-3">
+        <h1 className="text-lg font-semibold text-wa-header-foreground">Conversas</h1>
         <CreateRoomForm />
       </div>
 
-      {error && (
-        <p className="text-destructive text-sm">{error}</p>
-      )}
+      {/* Lista */}
+      <div className="flex-1 overflow-y-auto">
+        {error && (
+          <p className="px-4 py-3 text-destructive text-sm">{error}</p>
+        )}
 
-      {rooms.length === 0 && !loading ? (
-        <p className="text-muted-foreground text-center">
-          Nenhuma sala encontrada. Crie uma para começar.
-        </p>
-      ) : (
-        <div className="flex flex-col gap-2">
-          {rooms.map((room) => (
-            <RoomCard
-              key={room.id}
-              room={room}
-              onJoin={setSelectedRoom}
-            />
-          ))}
-        </div>
-      )}
+        {loading && rooms.length === 0 ? (
+          <p className="px-4 py-8 text-center text-wa-time text-sm">
+            Carregando salas...
+          </p>
+        ) : rooms.length === 0 ? (
+          <p className="px-4 py-8 text-center text-wa-time text-sm">
+            Nenhuma sala encontrada. Crie uma para começar.
+          </p>
+        ) : (
+          <div>
+            {rooms.map((room) => (
+              <RoomCard
+                key={room.id}
+                room={room}
+                onJoin={setSelectedRoom}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
       {selectedRoom && (
         <JoinRoomDialog

@@ -86,7 +86,7 @@ export function JoinRoomDialog({ room, onClose, onJoined }: JoinRoomDialogProps)
             />
           </div>
           {error && <p className="text-destructive text-sm">{error}</p>}
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" disabled={loading} className="rounded-full bg-wa-green text-white hover:bg-wa-teal">
             {loading ? "Entrando..." : "Entrar"}
           </Button>
         </form>

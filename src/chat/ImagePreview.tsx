@@ -17,7 +17,7 @@ export function ImagePreview({ src, alt = "Imagem" }: ImagePreviewProps) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="block max-w-48 cursor-pointer overflow-hidden rounded-lg"
+        className="block max-w-52 cursor-pointer overflow-hidden rounded-lg"
       >
         <img
           src={src}
@@ -28,7 +28,7 @@ export function ImagePreview({ src, alt = "Imagem" }: ImagePreviewProps) {
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-3xl p-2">
+        <DialogContent className="max-w-4xl p-2">
           <DialogTitle className="sr-only">{alt}</DialogTitle>
           <img
             src={src}

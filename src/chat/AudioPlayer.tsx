@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 interface AudioPlayerProps {
@@ -6,6 +6,7 @@ interface AudioPlayerProps {
 }
 
 function formatTime(seconds: number) {
+  if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
   const m = Math.floor(seconds / 60);
   const s = Math.floor(seconds % 60);
   return `${m}:${s.toString().padStart(2, "0")}`;
@@ -16,27 +17,82 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const animRef = useRef<number>(0);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const onPlay = () => setPlaying(true);
+    const onPause = () => setPlaying(false);
+
+    audio.addEventListener("play", onPlay);
+    audio.addEventListener("pause", onPause);
+    return () => {
+      audio.removeEventListener("play", onPlay);
+      audio.removeEventListener("pause", onPause);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!playing) {
+      cancelAnimationFrame(animRef.current);
+      return;
+    }
+    const tick = () => {
+      const audio = audioRef.current;
+      if (audio && Number.isFinite(audio.currentTime)) {
+        setCurrentTime(audio.currentTime);
+      }
+      animRef.current = requestAnimationFrame(tick);
+    };
+    animRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(animRef.current);
+  }, [playing]);
+
+  const trySetDuration = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (Number.isFinite(audio.duration) && audio.duration > 0) {
+      setDuration(audio.duration);
+    }
+  }, []);
 
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
-
-    if (playing) {
-      audio.pause();
+    if (audio.paused) {
+      audio.play().catch(() => {});
     } else {
-      audio.play();
+      audio.pause();
     }
-    setPlaying(!playing);
-  }, [playing]);
-
-  const handleTimeUpdate = useCallback(() => {
-    const audio = audioRef.current;
-    if (audio) setCurrentTime(audio.currentTime);
   }, []);
 
   const handleLoadedMetadata = useCallback(() => {
     const audio = audioRef.current;
-    if (audio) setDuration(audio.duration);
+    if (!audio) return;
+
+    if (Number.isFinite(audio.duration) && audio.duration > 0) {
+      setDuration(audio.duration);
+    } else {
+      // Chrome bug: blob audio do MediaRecorder retorna Infinity.
+      const onSeeked = () => {
+        audio.removeEventListener("seeked", onSeeked);
+        audio.currentTime = 0;
+        if (Number.isFinite(audio.duration) && audio.duration > 0) {
+          setDuration(audio.duration);
+        }
+      };
+      audio.addEventListener("seeked", onSeeked);
+      audio.currentTime = 1e10;
+    }
+  }, []);
+
+  const handleTimeUpdate = useCallback(() => {
+    const audio = audioRef.current;
+    if (audio && Number.isFinite(audio.currentTime)) {
+      setCurrentTime(audio.currentTime);
+    }
   }, []);
 
   const handleEnded = useCallback(() => {
@@ -64,8 +120,10 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
         src={src}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
+        onDurationChange={trySetDuration}
+        onCanPlay={trySetDuration}
         onEnded={handleEnded}
-        preload="metadata"
+        preload="auto"
       />
 
       <Button

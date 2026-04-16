@@ -11,11 +11,15 @@ export function useNotifications() {
   const [items, setItems] = useState<NotificationItem[]>([]);
 
   const notify = (message: string) => {
-    const id = nextId++;
-    setItems((prev) => [...prev.slice(-2), { id, message }]);
-    setTimeout(() => {
-      setItems((prev) => prev.filter((n) => n.id !== id));
-    }, 3000);
+    setItems((prev) => {
+      if (prev.some((n) => n.message === message)) return prev;
+      const id = nextId++;
+      const next = [...prev.slice(-2), { id, message }];
+      setTimeout(() => {
+        setItems((p) => p.filter((n) => n.id !== id));
+      }, 3000);
+      return next;
+    });
   };
 
   return { items, notify };

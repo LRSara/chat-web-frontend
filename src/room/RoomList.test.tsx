@@ -70,7 +70,7 @@ describe("RoomList", () => {
 
   it("deve ter botão de criar sala", () => {
     render(<RoomList />);
-    expect(screen.getByText("Criar sala")).toBeInTheDocument();
+    expect(screen.getByText("Nova sala")).toBeInTheDocument();
   });
 
   it("deve ter botão entrar em cada sala", () => {
@@ -83,7 +83,11 @@ describe("RoomList", () => {
     });
 
     render(<RoomList />);
-    const buttons = screen.getAllByText("Entrar");
-    expect(buttons).toHaveLength(2);
+    expect(screen.getByText("Sala A")).toBeInTheDocument();
+    expect(screen.getByText("Sala B")).toBeInTheDocument();
+    const roomButtons = screen.getAllByRole("button").filter(
+      (btn) => btn.textContent?.includes("Sala A") || btn.textContent?.includes("Sala B")
+    );
+    expect(roomButtons).toHaveLength(2);
   });
 });

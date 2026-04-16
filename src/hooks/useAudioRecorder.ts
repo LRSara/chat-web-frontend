@@ -21,6 +21,7 @@ interface AudioRecorderState {
   blob: Blob | null;
   mimeType: string;
   error: string | null;
+  stream: MediaStream | null;
 }
 
 export function useAudioRecorder() {
@@ -30,6 +31,7 @@ export function useAudioRecorder() {
     blob: null,
     mimeType: "",
     error: null,
+    stream: null,
   });
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -109,6 +111,7 @@ export function useAudioRecorder() {
         blob: null,
         mimeType: "",
         error: null,
+        stream,
       });
     } catch {
       setState((s) => ({
@@ -126,6 +129,7 @@ export function useAudioRecorder() {
       blob: null,
       mimeType: "",
       error: null,
+      stream: null,
     });
   }, [cleanup]);
 

@@ -1,34 +1,38 @@
 import type { Room } from "@/lib/types";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { HiOutlineChevronRight } from "react-icons/hi2";
 
 interface RoomCardProps {
   room: Room;
   onJoin: (room: Room) => void;
 }
 
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-}
-
 export function RoomCard({ room, onJoin }: RoomCardProps) {
+  const initials = room.name
+    .split(" ")
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
+
   return (
-    <Card>
-      <CardContent className="flex items-center justify-between gap-4">
-        <div className="min-w-0">
-          <p className="truncate font-medium">{room.name}</p>
-          <p className="text-muted-foreground text-sm">
+    <button
+      onClick={() => onJoin(room)}
+      className="flex w-full items-center gap-3 border-b border-border px-4 py-3 text-left transition-colors hover:bg-wa-input-bg"
+    >
+      <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-wa-teal text-sm font-semibold text-white">
+        {initials}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="truncate font-medium">{room.name}</p>
+        <div className="flex items-center gap-1.5">
+          <span className="size-2 rounded-full bg-wa-green" />
+          <p className="text-wa-time text-sm">
             {room.online_users_count}{" "}
-            {room.online_users_count === 1 ? "online" : "online"} · Criada em{" "}
-            {formatDate(room.created_at)}
+            {room.online_users_count === 1 ? "online" : "online"}
           </p>
         </div>
-        <Button onClick={() => onJoin(room)}>Entrar</Button>
-      </CardContent>
-    </Card>
+      </div>
+      <HiOutlineChevronRight className="size-5 shrink-0 text-wa-time" />
+    </button>
   );
 }
