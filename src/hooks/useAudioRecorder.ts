@@ -98,11 +98,18 @@ export function useAudioRecorder() {
         const elapsed = Math.floor(
           (Date.now() - startTimeRef.current) / 1000
         );
-        setState((s) => ({ ...s, duration: elapsed }));
 
         if (Date.now() - startTimeRef.current >= MAX_DURATION_MS) {
+          if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+          }
+          setState((s) => ({ ...s, duration: 120 }));
           stopRecording();
+          return;
         }
+
+        setState((s) => ({ ...s, duration: elapsed }));
       }, 100);
 
       setState({

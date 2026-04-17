@@ -11,7 +11,7 @@ function loadSession(): { currentRoomId: number | null; currentNick: string | nu
     const data = JSON.parse(raw);
     return {
       currentRoomId: data.currentRoomId ?? null,
-      currentNick: data.currentNick ?? null,
+      currentNick: data.currentNick ? data.currentNick.trim().toLowerCase() : null,
     };
   } catch {
     localStorage.removeItem(STORAGE_KEY);
@@ -55,15 +55,16 @@ export const useChatStore = create<ChatState>()((set, get) => ({
   usersOnline: [],
 
   joinRoom: async (roomId, password, nick) => {
-    await api.joinRoom(roomId, password, nick);
+    const normalizedNick = nick.trim().toLowerCase();
+    await api.joinRoom(roomId, password, normalizedNick);
     const [msgRes, onlineRes] = await Promise.all([
       api.getMessages(roomId, 1),
       api.getOnlineUsers(roomId),
     ]);
-    saveSession(roomId, nick);
+    saveSession(roomId, normalizedNick);
     set({
       currentRoomId: roomId,
-      currentNick: nick,
+      currentNick: normalizedNick,
       messages: msgRes.data.reverse(),
       meta: msgRes.meta,
       usersOnline: onlineRes.data,

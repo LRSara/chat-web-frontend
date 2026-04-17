@@ -6,6 +6,14 @@ interface RoomCardProps {
   onJoin: (room: Room) => void;
 }
 
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
 export function RoomCard({ room, onJoin }: RoomCardProps) {
   const initials = room.name
     .split(" ")
@@ -31,6 +39,7 @@ export function RoomCard({ room, onJoin }: RoomCardProps) {
             {room.online_users_count === 1 ? "online" : "online"}
           </p>
         </div>
+        <p className="text-wa-time mt-0.5 text-xs">Criada em: {formatDate(room.created_at)}</p>
       </div>
       <HiOutlineChevronRight className="size-5 shrink-0 text-wa-time" />
     </button>

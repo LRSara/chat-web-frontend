@@ -107,6 +107,7 @@ export function MessageInput({
         </Button>
         <span className="size-2 animate-pulse rounded-full bg-destructive" />
         <span className="text-sm tabular-nums">{formatDuration(duration)}</span>
+        <span className="text-muted-foreground text-xs">/ 2:00</span>
         <AudioWaveform stream={stream} />
         <div className="flex-1" />
         <Button size="sm" onClick={stopRecording} className="rounded-full bg-wa-green text-white hover:bg-wa-teal">
